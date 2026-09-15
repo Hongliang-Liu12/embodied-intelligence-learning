@@ -1,0 +1,38 @@
+# Python / local environments
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+/build/
+/dist/
+
+# Training artifacts: keep small, intentional evidence in learning_logs/ instead
+/datasets/
+/checkpoints/
+/outputs/
+/runs/
+/wandb/
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+
+# Credentials and private local configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+secrets/
+
+# OS temporary files
+.DS_Store
+Thumbs.db
+*.swp
+*~
