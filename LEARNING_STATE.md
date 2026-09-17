@@ -2,11 +2,11 @@
 
 > 本文件是当前进度的唯一权威记录。总计划见 MASTER_PLAN.md。自 v1.2 起，**只用 A01–H04 作为正式课程编号**；旧对话中的 M01–M08 只作为历史实操记录，不再决定下一课。
 
-更新日期：2026-09-16。
+更新日期：2026-09-17。
 课程基线：v1.0，72 单元 / 95 题；仓库执行修订：v1.2。
 当前阶段：**B——UR5 系列、规划与控制**。
 当前项目：P1——传统视觉抓取闭环（先完成机械臂与规划基础）。
-当前课程：**B03——ROS 2 与坐标传递：节点、话题、动作接口、TF**。
+当前课程：**B04——UR5 逆解与奇异处理：多解、限位、碰撞、连续性、代价**。
 
 ## 1. A 阶段完成情况
 
@@ -37,32 +37,47 @@
 - 已区分 `wrist_3_link`、`tool0`、`gripper_base`、TCP：tool0 是标准工具接口参考 frame，TCP 是真正任务执行参考 frame。
 - 已理解夹爪内部可用 revolute/prismatic joint；机械耦合时可用 mimic joint，是否 mimic 取决于真实机构。
 - 已完成最小 URDF 实操思维验收：`wrist_3_link → tool0 → gripper_base → tcp_link`，能修改 fixed joint 的 `xyz/rpy` 并处理 cm→m、deg→rad。
-- 用户明确提出：后续继续以面经进度为主，但在必要节点必须增加代码/工程实操；不要求每个概念都打断主线做实验。
 
 **B02 已完成首轮。**
 
-## 4. 当前唯一任务：B03 ROS 2 与 TF
+## 4. B03 完成情况：ROS 2 与 TF
+
+- 已建立整体层次：URDF 是模型描述层，ROS 2 是系统通信/组织层，MoveIt 是规划层，MuJoCo 是物理仿真层，真实 UR5 是硬件执行层。
+- 已理解 Node 是软件功能模块，不是硬件本身。
+- 已掌握 Topic / Publisher / Subscriber：Publisher 通过 Topic 持续发布消息，Subscriber 订阅 Topic 并在 callback 中处理消息。
+- 已掌握 Service：短请求/响应；Action：长时间任务，支持 Goal / Feedback / Result，并可取消。
+- 已完成 Publisher/Subscriber 最小 Python 实操：`robot_status_publisher` 在 `/robot_status` 上持续发布 String；`robot_status_subscriber` 持续收到消息。
+- 已实际使用 `ros2 node list`、`ros2 topic list`、`ros2 topic echo` 检查 ROS graph 和消息流。
+- 已总结 pub/sub 固定模板：Publisher = 定义 node → create_publisher → 构造 msg → publish；Subscriber = 定义 node → create_subscription → callback(msg)。
+- 已理解 TF 是运行时坐标变换系统；fixed joint 对应静态关系，运动关节对应随状态变化的动态关系。
+- 已明确 `tf2_echo target source` 的含义：把 source frame 的位姿表达在 target frame 下；target/source 与 parent/child 不是一套概念。
+- 已完成静态 TF 实操：发布 `base_link → tool0` 与 `tool0 → tcp_link` 两段静态变换，并通过 `tf2_echo base_link tcp_link` 查询得到 Translation `[0.400, 0.200, 0.600]`，验证 TF 自动沿 tree 组合变换。
+- 已理解 `static_transform_publisher` 是向 TF tree 写入关系，`tf2_echo` 是查询已存在的关系；只有 frame 名还不够，tree 中必须先存在连接路径。
+
+**B03 已完成首轮，并完成必要实操。**
+
+## 5. 当前唯一任务：B04 UR5 逆解与奇异处理
 
 知识目标：
-1. 先定义 ROS 2 是什么，它在机器人系统里解决什么问题；不要默认知道 ROS/节点/中间件。
-2. 理解 node、topic、publisher、subscriber：谁产生数据、谁消费数据、消息如何流动。
-3. 理解 service 与 action，尤其为什么 MoveIt / 机械臂执行常更适合 action 而不是普通 topic。
-4. 理解 message / interface 的最小概念：消息不是“随便一个 Python 变量”，而是有结构的通信类型。
-5. 理解 TF / TF2 是运行时坐标变换系统，和 URDF 中的静态/运动学结构如何衔接。
-6. 区分 static transform 与 dynamic transform；理解 robot_state_publisher / joint_states 在整条链中的作用。
-7. 能从 `base_link → ... → tool0 → tcp_link` 理解 TF tree，并回答一个点从 camera frame 转到 base frame 的基本思路。
-8. 做一个最小 ROS 2 / TF 实操或代码级演示；如果本机环境不便，则至少做可运行的最小节点/消息代码阅读，不把 B03 变成纯名词课。
+1. 把 A06 的“二连杆多解”扩展到 6 轴机械臂，理解同一个末端位姿为什么可能对应多组关节角。
+2. 区分解析 IK 与数值 IK 在 UR5/UR 系列中的工程意义，不要求死背完整解析公式，但要理解解的分支来源。
+3. 学会筛选 IK 解：关节限位、碰撞、离当前构型的距离、轨迹连续性、奇异性、安全裕度与任务约束。
+4. 理解“最近解”不是永远最优；当前姿态、下一时刻目标和整条轨迹都影响解选择。
+5. 把 A07 Jacobian 奇异性迁移到 UR5：识别常见腕部/肘部/肩部奇异的直觉，并理解接近奇异点时关节速度放大。
+6. 理解数值 IK 在近奇异时为何需要阻尼/步长/初值与约束。
+7. 做一个最小代码级 IK 多解筛选或数值实验；不强求一开始接真实 UR5 大工程，但必须有实际筛选逻辑。
+8. 面试验收：能回答“UR5 IK 多解怎么选”“没有解析解怎么办”“奇异点怎么办”。
 
-教学顺序：ROS 2 为什么存在 → node/topic → service/action → message → TF tree → URDF 与 TF → 最小代码/实操 → 面试验收。
+教学顺序：从二连杆多解复习 → 6 轴多解来源 → 工程筛选 → 奇异性 → 数值 IK → 最小实操 → 面试整合。
 
-## 5. B 阶段路线
+## 6. B 阶段路线
 
 | 正式课号 | 内容 | 状态 |
 |---|---|---|
 | B01 | URDF：link/joint、fixed origin、visual/collision/inertial | **已完成首轮** |
 | B02 | 三维资产与夹爪：STL、mesh、材质、安装变换、工具坐标 | **已完成首轮** |
-| **B03** | **ROS 2 与坐标传递：节点、话题、动作接口、TF** | **当前课程** |
-| B04 | UR5 逆解与奇异处理：多解、限位、碰撞、连续性、代价 | B03 后 |
+| B03 | ROS 2 与坐标传递：节点、话题、动作接口、TF | **已完成首轮 + 实操** |
+| **B04** | **UR5 逆解与奇异处理：多解、限位、碰撞、连续性、代价** | **当前课程** |
 | B05 | Dijkstra / A* | B04 后 |
 | B06 | RRT 与配置空间 | B05 后 |
 | B07 | MoveIt 规划到执行 | B06 后 |
@@ -70,12 +85,10 @@
 | B09 | MPC | B08 后 |
 | B10 | 延迟诊断 | B09 后 |
 
-## 6. 实操与证据边界
+## 7. 实操与证据边界
 
-用户已报告本地存在 MuJoCo 单杆、重力、Actuator、PD、IK/FK 数学验证等实验文件，但尚未完整统一提交到仓库。不伪造源码。
+继续保持“面经优先 + 必要实操”原则：不是每个概念都打断主线做实验，但 TF、MoveIt、GraspNet、SAC、VLA 等仅靠口头难以掌握的节点必须安排最小工程验证。
 
-B03 开始保持“面经优先 + 必要实操”原则：概念若不影响后续理解可快速通过；遇到 TF、MoveIt、GraspNet、SAC 等仅靠口头难以掌握的节点，必须安排最小代码/工程验证。
-
-## 7. 接续规则
+## 8. 接续规则
 
 每次开始先读本文件和 TEACHING_RULES.md。只按正式 A/B/C... 课号报进度。课后更新：实际完成、仍不理解、证据等级、下一正式单元。路线变化写 CHANGELOG.md。
