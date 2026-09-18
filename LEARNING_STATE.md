@@ -87,6 +87,7 @@ ros2 launch ur_robot_driver ur_control.launch.py \
 source /opt/ros/humble/setup.zsh
 export ROS_DOMAIN_ID=42
 export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+export QT_FONT_DPI=144
 
 ros2 launch ur_moveit_config ur_moveit.launch.py \
   ur_type:=ur5e \
