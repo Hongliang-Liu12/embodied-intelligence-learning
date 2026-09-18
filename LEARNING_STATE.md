@@ -62,3 +62,45 @@ A01–A08 已完成首轮学习与核心验收。
 
 ## 4. 接续规则
 当前不直接进入 C01。先完成 P1-A 必要机械臂工程，再继续 C01–C08。
+
+## P1-A 当前冻结启动配方（本机 WSL / ROS 2 Humble）
+
+本机已实测：仅启动 MoveIt/RViz 不足以提供完整 TF；需要同时启动 UR 假硬件控制层、ros2_control、robot_state_publisher 与 joint_state_broadcaster。后续 P1-A 固定沿用下面两个终端配置，两个终端必须保持相同的 ROS_DOMAIN_ID 与 RMW_IMPLEMENTATION。
+
+终端一：UR5e 假硬件 + 控制器 + TF
+```bash
+source /opt/ros/humble/setup.bash
+export ROS_DOMAIN_ID=42
+export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+
+ros2 launch ur_robot_driver ur_control.launch.py \
+  ur_type:=ur5e \
+  robot_ip:=0.0.0.0 \
+  use_fake_hardware:=true \
+  launch_rviz:=false \
+  launch_dashboard_client:=false \
+  initial_joint_controller:=joint_trajectory_controller
+```
+
+终端二：MoveIt + RViz
+```bash
+source /opt/ros/humble/setup.bash
+export ROS_DOMAIN_ID=42
+export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+
+ros2 launch ur_moveit_config ur_moveit.launch.py \
+  ur_type:=ur5e \
+  launch_rviz:=true
+```
+
+验证命令：
+```bash
+ros2 run tf2_ros tf2_echo base tool0
+ros2 control list_controllers
+ros2 node list
+ros2 topic list
+```
+
+已实测 `tf2_echo base tool0` 持续输出正常变换，例如 Translation 约为 `[-0.001, -0.233, 1.079]`。刚启动 TF 时短暂出现 frame does not exist 可等待约 1 秒后重试，属于初始化时序。
+
+注意：官方较新的 UR ROS 2 Driver 文档使用 `use_mock_hardware` 作为参数名，但当前本机 Humble 安装环境已经实测 `use_fake_hardware:=true` 可用；P1-A 以“本机已验证命令”为准，不在中途随意切换参数名。
