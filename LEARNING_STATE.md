@@ -8,7 +8,7 @@
 当前项目：P1——传统视觉抓取闭环。
 当前课程：**P1-A——已知目标位姿的 UR5e + Robotiq 2F-85 + MoveIt + MuJoCo 执行闭环**。
 P1-A 工程课表：**6 讲 / 24 小节**，详见 [P1_A_PROJECT_PLAN.md](P1_A_PROJECT_PLAN.md)。
-当前工程小节：**第 1 讲第 1.4 节 /joint_states 与 robot_state_publisher（3/24 已完成，1.4 进行中）**。
+当前工程小节：**第 2 讲第 2.1 节：定位实际机器人描述文件与 ROS package 安装位置（4/24 已完成，2.1 进行中）**。
 
 ## 1. A 阶段
 A01–A08 已完成首轮学习与核心验收。
@@ -112,6 +112,6 @@ ros2 topic echo /joint_states --once
 
 已实测 `tf2_echo base tool0` 持续输出正常变换，例如 Translation 约为 `[-0.001, -0.233, 1.079]`。刚启动 TF 时短暂出现 frame does not exist 可等待约 1 秒后重试，属于初始化时序。
 
-已通过 `/controller_manager/list_controllers` service 实测：`joint_state_broadcaster` 与 `joint_trajectory_controller` 均为 `active`。当前正在验收 `/joint_states`。
+已通过 `/controller_manager/list_controllers` service 实测：`joint_state_broadcaster` 与 `joint_trajectory_controller` 均为 `active`。已读取 `/joint_states`，确认 6 个 UR5e 关节状态；已讲清 `name[i]` 与状态数组按索引对应、revolute joint position 使用 rad，以及 `robot_state_publisher` 根据 URDF + joint states 发布 TF。P1-A 第 1 讲验收完成。
 
 注意：官方较新的 UR ROS 2 Driver 文档使用 `use_mock_hardware` 作为参数名，但当前本机 Humble 安装环境已经实测 `use_fake_hardware:=true` 可用；P1-A 以“本机已验证命令”为准，不在中途随意切换参数名。
