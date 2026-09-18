@@ -249,10 +249,11 @@ wrist_3_link → tool0 → gripper_base → tcp_link。
   - 1.4 ✅ /joint_states 与 robot_state_publisher；已读取 6 个 UR5e 关节状态，并完成 name/position 索引关系与单位验收。
 - 第 2 讲：进行中
   - 2.1 ✅ 完成：已定位系统安装的 ur_description；理解 package prefix/share、overlay、ur.urdf.xacro / ur_macro.xacro / ros2_control 文件分工，并明确不直接修改 /opt/ros/humble 系统包。
-  - 2.2 ⏳ 当前：tool0、flange、gripper_base、tcp_link 与 fixed joint 安装变换。
-  - 2.3–2.4 未开始。
+  - 2.2 ✅ 完成：理解 flange、tool0、gripper_base、tcp_link，以及 fixed joint 安装变换与 TCP 抓取任务坐标。
+  - 2.3 ⏳ 当前：Robotiq 2F-85 的 link/joint、机械耦合与 mimic 关系。
+  - 2.4 未开始。
 - 第 3–6 讲：未开始。
 
-当前工程小节进度：**5 / 24 完成，当前第 6 小节（2.2）**。
+当前工程小节进度：**6 / 24 完成，当前第 7 小节（2.3）**。
 
 > 注意：这里的 3/24 是 P1-A 工程课表进度，不替代总课程 72 单元进度。A01–B10 已完成首轮，P1-A 是 B10 后插入的必做工程关卡。
