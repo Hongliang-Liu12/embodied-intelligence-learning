@@ -3,12 +3,13 @@
 > 本文件是当前进度的唯一权威记录。总计划见 MASTER_PLAN.md。自 v1.2 起，**只用 A01–H04 作为正式课程编号**。
 
 更新日期：2026-09-18。
-课程基线：v1.0，72 单元 / 95 题；仓库执行修订：v1.2。
+课程基线：v1.0，72 单元 / 95 题；仓库执行修订：v1.5（快速算法主线）。
 当前阶段：**P1-A——第一个真正机械臂端到端工程（B 阶段完成后插入）**。
 当前项目：P1——传统视觉抓取闭环。
 当前课程：**P1-A——已知目标位姿的 UR5e + Robotiq 2F-85 + MoveIt + MuJoCo 执行闭环**。
 P1-A 工程课表：**6 讲 / 24 小节**，详见 [P1_A_PROJECT_PLAN.md](P1_A_PROJECT_PLAN.md)。
-当前工程小节：**第 2 讲第 2.3 节最后验收（6/24 已完成）**。已完成 Robotiq 2F-85 单独加载、主动关节开合方向与 mimic/耦合验证；仅剩 RViz Collision 基本贴合 + mesh 尺度正常 的确认。若该项正常，立即将 2.3 标记完成并进入 **2.4：UR5e + Robotiq 2F-85 自定义 description、TF/collision/TCP 验证**。
+当前执行模式：**快速算法主线**。底层 ROS 2 / URDF / Xacro / CMake / MoveIt 工程细节以“能看懂、能解释链路、知道关键调试点”为主要目标，只保留会影响后续算法理解的最小实验；ACT / Diffusion Policy / SAC / VLA 恢复高强度推导、代码与实验。
+当前工程小节：**2.4 进行中（6/24 已完成）**。2.3 的 Robotiq 运动/耦合已通过；单独 collision/尺度最后证据尚未明确记录，不再单独阻塞课程，合并到 2.4 组合模型的 collision 快速检查中。2.4 已创建自定义 ur5e_robotiq_description、组合 Xacro 与 CMake/package 元数据；本机已实测 colcon build --packages-select ur5e_robotiq_description --symlink-install 成功。下一步只做最小的 Xacro→URDF→TF/TCP/collision 验证，随后压缩完成 P1-A 第 3–6 讲并尽快进入算法主线。
 
 ## 1. A 阶段
 A01–A08 已完成首轮学习与核心验收。
@@ -63,7 +64,7 @@ A01–A08 已完成首轮学习与核心验收。
 完成 P1-A 后再进入 C01，相机/深度/点云/标定/GraspNet 会把它升级成 P1 完整视觉抓取闭环。
 
 ## 4. 接续规则
-当前不直接进入 C01。先完成 P1-A 必要机械臂工程，再继续 C01–C08。
+采用 v1.5 快速算法主线：P1-A 仍需把关键链路讲清，但剩余工程不再追求逐个底层文件的完整独立实操。完成最小 TF/TCP、MoveIt 规划→RobotTrajectory、MoveIt→MuJoCo 映射概念与一次代表性验证后，即可结束 P1-A。C 阶段相机/点云/GraspNet 只保留后续模仿学习/VLA 必需的核心概念与一个最小示例，然后尽快进入 D（BC/ACT/Diffusion Policy）→ E（SAC）→ F（VLA/π 系列）。G 阶段 C++/数据结构改为按需穿插，不再作为阻塞算法主线的前置关卡。
 
 ## P1-A 当前冻结启动配方（本机 WSL / ROS 2 Humble）
 
@@ -145,6 +146,7 @@ ros2 topic echo /joint_states --once
 
 ### 下一对话唯一接续动作
 1. 先读取仓库 LEARNING_STATE.md 与 P1_A_PROJECT_PLAN.md，不要从聊天猜进度。
-2. 如果用户已经确认 collision 基本贴合且尺度正常：直接将 2.3 标记完成，进入 2.4。
-3. 如果用户还没检查：用一轮完成上述 collision/尺度确认，不重复 2.1–2.3 已完成教学，然后立即进入 2.4。
-4. 2.4 目标：创建自己的 UR5e + Robotiq 2F-85 description 组合，不修改 /opt/ros/humble；随后验证 TF、collision、TCP，再进入第 3 讲 MoveIt 规划。
+2. 从已成功 build 的 ur5e_robotiq_description 继续；不要重讲 CMake/package.xml 细节。
+3. 用最小验证讲清 Xacro → URDF → robot_description → robot_state_publisher → TF，快速检查 tool0 → robotiq_85_base_link → tcp_link 与组合 collision；2.3 的 collision/尺度证据在这里一并收口。
+4. 随后以快速算法主线压缩 P1-A 第 3–6 讲：重点理解 planning group/current state、Pose→IK→Plan、RobotTrajectory 字段、MoveIt→MuJoCo 关节映射与控制执行，不再为低价值底层配置反复调试。
+5. P1-A 最小链路通过后，C 阶段压缩，只补相机/坐标变换/点云/GraspNet 核心，再尽快进入 D/E/F：ACT/DP、SAC、VLA。
