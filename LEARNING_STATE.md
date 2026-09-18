@@ -65,11 +65,11 @@ A01–A08 已完成首轮学习与核心验收。
 
 ## P1-A 当前冻结启动配方（本机 WSL / ROS 2 Humble）
 
-本机已实测：仅启动 MoveIt/RViz 不足以提供完整 TF；需要同时启动 UR 假硬件控制层、ros2_control、robot_state_publisher 与 joint_state_broadcaster。后续 P1-A 固定沿用下面两个终端配置，两个终端必须保持相同的 ROS_DOMAIN_ID 与 RMW_IMPLEMENTATION。
+本机使用 **zsh**。仅启动 MoveIt/RViz 不足以提供完整 TF；需要同时启动 UR 假硬件控制层、ros2_control、robot_state_publisher 与 joint_state_broadcaster。后续 P1-A 固定沿用下面两个 zsh 终端配置，两个终端必须保持相同的 ROS_DOMAIN_ID 与 RMW_IMPLEMENTATION。
 
 终端一：UR5e 假硬件 + 控制器 + TF
 ```bash
-source /opt/ros/humble/setup.bash
+source /opt/ros/humble/setup.zsh
 export ROS_DOMAIN_ID=42
 export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
 
@@ -84,7 +84,7 @@ ros2 launch ur_robot_driver ur_control.launch.py \
 
 终端二：MoveIt + RViz
 ```bash
-source /opt/ros/humble/setup.bash
+source /opt/ros/humble/setup.zsh
 export ROS_DOMAIN_ID=42
 export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
 
