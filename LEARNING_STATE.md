@@ -8,7 +8,7 @@
 当前项目：P1——传统视觉抓取闭环。
 当前课程：**P1-A——已知目标位姿的 UR5e + Robotiq 2F-85 + MoveIt + MuJoCo 执行闭环**。
 P1-A 工程课表：**6 讲 / 24 小节**，详见 [P1_A_PROJECT_PLAN.md](P1_A_PROJECT_PLAN.md)。
-当前工程小节：**第 2 讲第 2.3 节实验验收：加载 Robotiq 2F-85，验证开合方向、耦合、mesh 尺度与 visual/collision/inertial（6/24 已完成，2.3 进行中）**。
+当前工程小节：**第 2 讲第 2.3 节最后验收（6/24 已完成）**。已完成 Robotiq 2F-85 单独加载、主动关节开合方向与 mimic/耦合验证；仅剩 RViz Collision 基本贴合 + mesh 尺度正常 的确认。若该项正常，立即将 2.3 标记完成并进入 **2.4：UR5e + Robotiq 2F-85 自定义 description、TF/collision/TCP 验证**。
 
 ## 1. A 阶段
 A01–A08 已完成首轮学习与核心验收。
@@ -115,3 +115,36 @@ ros2 topic echo /joint_states --once
 已通过 `/controller_manager/list_controllers` service 实测：`joint_state_broadcaster` 与 `joint_trajectory_controller` 均为 `active`。已读取 `/joint_states`，确认 6 个 UR5e 关节状态；已讲清 `name[i]` 与状态数组按索引对应、revolute joint position 使用 rad，以及 `robot_state_publisher` 根据 URDF + joint states 发布 TF。P1-A 第 1 讲验收完成。
 
 注意：官方较新的 UR ROS 2 Driver 文档使用 `use_mock_hardware` 作为参数名，但当前本机 Humble 安装环境已经实测 `use_fake_hardware:=true` 可用；P1-A 以“本机已验证命令”为准，不在中途随意切换参数名。
+
+## P1-A 第 2 讲最新工程证据（2026-09-18）
+
+### 2.1 已完成
+- ros2 pkg prefix ur_description 与 ur_moveit_config 均解析到 /opt/ros/humble，确认当前 UR 模型来自系统安装包。
+- 已区分 ur_description（机器人结构）与 ur_moveit_config（MoveIt 配置）。
+- 已定位 /opt/ros/humble/share/ur_description/urdf，看到 ur.urdf.xacro、ur_macro.xacro、ur.ros2_control.xacro、inc/。
+- 已理解 overlay 思想：自己的组合模型应放 workspace，不直接修改 /opt/ros/humble。
+
+### 2.2 已完成
+- 已理解 flange、tool0、gripper_base、tcp_link。
+- 能解释 fixed joint 安装变换与 TCP 是任务工作点。
+- 验收题通过：0.05 + 0.12 = 0.17 m；抓取任务应让 tcp_link 对准 grasp pose，而不是直接让 tool0 对准。
+
+### 2.3 已完成内容
+- 已 clone robotiq/ros 到 workspace；colcon list | grep robotiq 能发现 robotiq_controllers、robotiq_description、robotiq_driver、robotiq_hardware_tests、robotiq_tsf。
+- 已理解 2F-85 中“多个运动 joint”和“独立控制 DOF”不是一回事；若 1 个主动关节、其余 mimic，则独立控制 DOF = 1。
+- 第一次启动 view_gripper.launch.py 时旧 UR5e 节点未关闭，RViz / Joint State Publisher 出现 UR5e 关节并周期性跳姿态；已识别为多套节点/状态源同时存在导致的 ROS 图污染，而非 Robotiq 模型错误。
+- 关闭旧 UR5e / MoveIt / Robotiq launch 后重新单独启动，RViz 正确显示 2F-85，Joint State Publisher GUI 只显示主动关节 robotiq_85_left_knuckle_joint。
+- 用户实测：主动关节数值增大时夹爪收紧/闭合；理解其余 joint 由 mimic/耦合跟随主动 joint。
+- 用户回答通过：GUI 只重点控制主动 joint，因为其余 revolute joint 不是独立控制自由度。
+
+### 2.3 尚未明确记录为通过的最后一项
+- 在 RViz RobotModel 中切换 Visual Enabled=false、Collision Enabled=true：
+  1. 确认 collision 基本贴合夹爪主体/手指；
+  2. 确认整体尺度为正常十几厘米量级，无 mm↔m 的 1000× 错误。
+- 本轮用户尚未明确报告这两项结果，因此不要伪造“2.3 完成”。
+
+### 下一对话唯一接续动作
+1. 先读取仓库 LEARNING_STATE.md 与 P1_A_PROJECT_PLAN.md，不要从聊天猜进度。
+2. 如果用户已经确认 collision 基本贴合且尺度正常：直接将 2.3 标记完成，进入 2.4。
+3. 如果用户还没检查：用一轮完成上述 collision/尺度确认，不重复 2.1–2.3 已完成教学，然后立即进入 2.4。
+4. 2.4 目标：创建自己的 UR5e + Robotiq 2F-85 description 组合，不修改 /opt/ros/humble；随后验证 TF、collision、TCP，再进入第 3 讲 MoveIt 规划。
