@@ -8,7 +8,7 @@
 当前项目：P1——传统视觉抓取闭环。
 当前课程：**P1-A——已知目标位姿的 UR5e + Robotiq 2F-85 + MoveIt + MuJoCo 执行闭环**。
 P1-A 工程课表：**6 讲 / 24 小节**，详见 [P1_A_PROJECT_PLAN.md](P1_A_PROJECT_PLAN.md)。
-当前工程小节：**第 2 讲第 2.1 节：定位实际机器人描述文件与 ROS package 安装位置（4/24 已完成，2.1 进行中）**。
+当前工程小节：**第 2 讲第 2.2 节：tool0、flange、gripper_base、tcp_link 与 fixed joint 安装变换（5/24 已完成，2.2 进行中）**。
 
 ## 1. A 阶段
 A01–A08 已完成首轮学习与核心验收。
