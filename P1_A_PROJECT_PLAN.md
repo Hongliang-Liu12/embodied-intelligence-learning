@@ -250,10 +250,10 @@ wrist_3_link → tool0 → gripper_base → tcp_link。
 - 第 2 讲：进行中
   - 2.1 ✅ 完成：已定位系统安装的 ur_description；理解 package prefix/share、overlay、ur.urdf.xacro / ur_macro.xacro / ros2_control 文件分工，并明确不直接修改 /opt/ros/humble 系统包。
   - 2.2 ✅ 完成：理解 flange、tool0、gripper_base、tcp_link，以及 fixed joint 安装变换与 TCP 抓取任务坐标。
-  - 2.3 ⏳ 进行中：概念部分与源码引入已完成；仍需实际加载 2F-85，验证主动关节驱动时两指开合方向、关节耦合是否正确，并检查 mesh 尺度/单位以及 visual/collision/inertial 基本合理性。
-  - 2.4 未开始：完成 2.3 实验后，再把 UR5e 与 Robotiq 2F-85 组合成自己的机器人 description，并验证 TF / collision / TCP。
+  - 2.3 ⏳ 进行中（仅差最后一项验收）：已引入 robotiq/ros；colcon 已发现 robotiq_description / driver / controllers；已单独启动 view_gripper.launch.py，确认 GUI 只暴露主动关节 robotiq_85_left_knuckle_joint；用户实测该 joint 数值增大时夹爪闭合，左右通过 mimic/机械耦合联动；用户能解释“多个 revolute joint ≠ 多个独立控制 DOF”。尚未明确记录的最后验收：切换 RViz Collision 显示，确认 collision 基本贴合且 mesh 尺度为正常十几厘米量级，无 m/mm 的 1000× 错误。
+  - 2.4 未开始：2.3 最后一项若确认正常，立即进入 UR5e + Robotiq 2F-85 自定义 description 组合，验证 TF / collision / TCP。
 - 第 3–6 讲：未开始。
 
-当前工程小节进度：**6 / 24 完成，当前第 7 小节（2.3 实验验收）**。
+当前工程小节进度：**6 / 24 完成，当前第 7 小节（2.3 仅剩 collision/尺度最终确认；确认后立即进入 2.4）**。
 
 > 注意：这里的 3/24 是 P1-A 工程课表进度，不替代总课程 72 单元进度。A01–B10 已完成首轮，P1-A 是 B10 后插入的必做工程关卡。
