@@ -2,6 +2,25 @@
 
 普通上课记录写 learning_logs/，动态进度写 LEARNING_STATE.md。只有路线、映射、组织方式变化才写本文件。
 
+## 2026-09-18：执行修订 v1.5——快速算法主线
+
+### 用户决定
+
+底层 ROS 2 / URDF / Xacro / CMake / MoveIt 胶水工程不再作为主要耗时部分。要求这些内容讲清楚、能看懂、知道工程链路与关键调试点即可，把学习时间尽快转向 ACT / Diffusion Policy、SAC、VLA / π 系列等高级算法。
+
+### 调整
+
+1. 保留 72 单元与 P1-A 课表编号，不删除基础知识，但将教学深度分成“理解级 / 最小验证级 / 深度掌握级”。
+2. CMake、package.xml、launch、普通 Xacro 胶水代码降为理解级；不再要求大量独立从零搭建。
+3. TF/TCP、planning group、RobotTrajectory、关节名/单位映射、MoveIt→MuJoCo 控制链保留一次代表性验证，因为它们直接影响后续算法接口正确性。
+4. P1-A 剩余 3–6 讲压缩推进；C 阶段视觉基础只保留 VLA/模仿学习需要的核心相机、坐标、点云、GraspNet 概念与最小示例。
+5. D/E/F 成为后续时间投入重点：BC→ACT/DP→SAC→VLA/π。G 阶段 C++/数据结构按需穿插，不再阻塞算法主线。
+6. 证据分级仍保留：讲过/能解释/用户报告跑通/独立实验不得混写。
+
+### 当前承接
+
+P1-A 2.4 已建立自定义 ur5e_robotiq_description，并真实完成一次 colcon build。下一步只做最小 Xacro→URDF→TF/TCP/collision 验证后快速进入 MoveIt/RobotTrajectory 核心链。
+
 ## 2026-09-15：执行修订 v1.2——总计划成为唯一课程顺序
 
 ### 原问题
