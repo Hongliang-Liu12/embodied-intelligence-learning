@@ -9,7 +9,7 @@
 当前课程：**P1-A——已知目标位姿的 UR5e + Robotiq 2F-85 + MoveIt + MuJoCo 执行闭环**。
 P1-A 工程课表：**6 讲 / 24 小节**，详见 [P1_A_PROJECT_PLAN.md](P1_A_PROJECT_PLAN.md)。
 当前执行模式：**快速算法主线**。底层 ROS 2 / URDF / Xacro / CMake / MoveIt 工程细节以“能看懂、能解释链路、知道关键调试点”为主要目标，只保留会影响后续算法理解的最小实验；ACT / Diffusion Policy / SAC / VLA 恢复高强度推导、代码与实验。
-当前工程小节：**2.4 进行中（6/24 已完成）**。2.3 的 Robotiq 运动/耦合已通过；单独 collision/尺度最后证据尚未明确记录，不再单独阻塞课程，合并到 2.4 组合模型的 collision 快速检查中。2.4 已创建自定义 ur5e_robotiq_description、组合 Xacro 与 CMake/package 元数据；本机已实测 colcon build --packages-select ur5e_robotiq_description --symlink-install 成功。下一步只做最小的 Xacro→URDF→TF/TCP/collision 验证，随后压缩完成 P1-A 第 3–6 讲并尽快进入算法主线。
+当前工程小节：**3.1 planning group 与 current state（8/24 已完成）**。第 2 讲已完成：2.3 的 Robotiq 开合/mimic 与 collision/尺度由用户报告通过；2.4 已创建并成功 build 自定义 ur5e_robotiq_description，用户报告已完成 Xacro→URDF、组合 RViz、TF/TCP 与 collision 验证。证据级别：用户报告跑通，未独立复现。下一步进入第 3 讲，快速理解 MoveIt 的 planning group、current state、Pose→IK→Plan→Execute。
 
 ## 1. A 阶段
 A01–A08 已完成首轮学习与核心验收。
@@ -138,15 +138,14 @@ ros2 topic echo /joint_states --once
 - 用户实测：主动关节数值增大时夹爪收紧/闭合；理解其余 joint 由 mimic/耦合跟随主动 joint。
 - 用户回答通过：GUI 只重点控制主动 joint，因为其余 revolute joint 不是独立控制自由度。
 
-### 2.3 尚未明确记录为通过的最后一项
-- 在 RViz RobotModel 中切换 Visual Enabled=false、Collision Enabled=true：
-  1. 确认 collision 基本贴合夹爪主体/手指；
-  2. 确认整体尺度为正常十几厘米量级，无 mm↔m 的 1000× 错误。
-- 本轮用户尚未明确报告这两项结果，因此不要伪造“2.3 完成”。
+### 2.3 / 2.4 收口（用户报告）
+- 2.3：Robotiq 2F-85 主动 joint、mimic/耦合、collision 基本贴合与尺度正常，用户报告通过。
+- 2.4：已创建自定义 ur5e_robotiq_description；CMake/package.xml 修正后 build 成功；Xacro 参数问题已解决；用户报告组合模型 RViz 可显示，TF/TCP 与 collision 检查已跑完。
+- 证据边界：以上为用户报告跑通；未独立检查其本机完整输出，不记录为独立复现。
 
 ### 下一对话唯一接续动作
 1. 先读取仓库 LEARNING_STATE.md 与 P1_A_PROJECT_PLAN.md，不要从聊天猜进度。
-2. 从已成功 build 的 ur5e_robotiq_description 继续；不要重讲 CMake/package.xml 细节。
-3. 用最小验证讲清 Xacro → URDF → robot_description → robot_state_publisher → TF，快速检查 tool0 → robotiq_85_base_link → tcp_link 与组合 collision；2.3 的 collision/尺度证据在这里一并收口。
-4. 随后以快速算法主线压缩 P1-A 第 3–6 讲：重点理解 planning group/current state、Pose→IK→Plan、RobotTrajectory 字段、MoveIt→MuJoCo 关节映射与控制执行，不再为低价值底层配置反复调试。
-5. P1-A 最小链路通过后，C 阶段压缩，只补相机/坐标变换/点云/GraspNet 核心，再尽快进入 D/E/F：ACT/DP、SAC、VLA。
+2. 当前从 P1-A 3.1 开始，不再回到第 2 讲底层配置。
+3. 3.1 重点：planning group 是 MoveIt 选择参与规划的关节/链；current state 来自 /joint_states，并进入 MoveIt 的 RobotState/CurrentStateMonitor。
+4. 明确当前官方 ur_moveit_config 的 ur_manipulator 语义链默认到 tool0；自定义 tcp_link 已存在于 URDF/TF，但若要成为 MoveIt 语义末端，需要 SRDF/MoveIt 配置一致。快速路线先讲清这一层，不在此处展开大量配置工程。
+5. 随后推进 3.2 Pose 与参考系 → 3.3 Pose→IK→q_goal → 3.4 Plan/Execute。
