@@ -240,13 +240,16 @@ wrist_3_link → tool0 → gripper_base → tcp_link。
 
 总进度：**P1-A 共 6 讲 / 24 小节**。
 
-- 第 1 讲：进行中
-  - 1.1 ✅ 完成：UR5e fake hardware + MoveIt + RViz 启动链。
-  - 1.2 ✅ 完成：TF，已实测 base → tool0。
-  - 1.3 ✅ 完成：controller_manager 与两个核心 controller，已实测均 active。
-  - 1.4 ⏳ 当前：/joint_states 与 robot_state_publisher；概念已讲，等待读取一次真实 /joint_states 完成验收。
-- 第 2–6 讲：未开始。
+- 第 1 讲：✅ 完成
+  - 1.1 ✅ UR5e fake hardware + MoveIt + RViz 启动链。
+  - 1.2 ✅ TF，已实测 base → tool0。
+  - 1.3 ✅ controller_manager 与两个核心 controller，已实测均 active。
+  - 1.4 ✅ /joint_states 与 robot_state_publisher；已读取 6 个 UR5e 关节状态，并完成 name/position 索引关系与单位验收。
+- 第 2 讲：进行中
+  - 2.1 ⏳ 当前：定位实际机器人描述文件，理解 ROS package 安装位置、overlay、ur_description 与 ur_moveit_config 分工。
+  - 2.2–2.4 未开始。
+- 第 3–6 讲：未开始。
 
-当前工程小节进度：**3 / 24 完成，当前第 4 小节**。
+当前工程小节进度：**4 / 24 完成，当前第 5 小节（2.1）**。
 
 > 注意：这里的 3/24 是 P1-A 工程课表进度，不替代总课程 72 单元进度。A01–B10 已完成首轮，P1-A 是 B10 后插入的必做工程关卡。
