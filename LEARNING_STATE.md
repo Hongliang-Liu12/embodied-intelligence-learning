@@ -5,11 +5,11 @@
 更新日期：2026-09-18。
 课程基线：v1.0，72 单元 / 95 题；仓库执行修订：v1.5（快速算法主线）。
 当前阶段：**P1-A——第一个真正机械臂端到端工程（B 阶段完成后插入）**。
-当前项目：P1——传统视觉抓取闭环。
+当前项目：P1——传统视觉抓取闭环（P1-A 核心链路已完成理解级/最小验证级，完整端到端工程复现暂缓）。
 当前课程：**P1-A——已知目标位姿的 UR5e + Robotiq 2F-85 + MoveIt + MuJoCo 执行闭环**。
 P1-A 工程课表：**6 讲 / 24 小节**，详见 [P1_A_PROJECT_PLAN.md](P1_A_PROJECT_PLAN.md)。
 当前执行模式：**快速算法主线**。底层 ROS 2 / URDF / Xacro / CMake / MoveIt 工程细节以“能看懂、能解释链路、知道关键调试点”为主要目标，只保留会影响后续算法理解的最小实验；ACT / Diffusion Policy / SAC / VLA 恢复高强度推导、代码与实验。
-当前工程小节：**第 5–6 讲快速合并：MoveIt→MuJoCo + 最小抓取（16/24 已完成）**。第 2 讲已完成：2.3 的 Robotiq 开合/mimic 与 collision/尺度由用户报告通过；2.4 已创建并成功 build 自定义 ur5e_robotiq_description，用户报告已完成 Xacro→URDF、组合 RViz、TF/TCP 与 collision 验证。证据级别：用户报告跑通，未独立复现。3.1 已通过：能区分 planning group 与 current state，并理解 UR5e 6 DOF 与 Robotiq 1 DOF 可按任务分组，不要求每次联合规划全部 7 DOF。3.2 已通过：能说明 Pose = position + orientation + reference frame；理解 quaternion (0,0,0,1) 为 identity rotation；抓取任务应让 tcp_link 对准 grasp pose。3.3 已通过：理解 Pose→IK→q_goal、多解、关节限位/碰撞约束，以及 IK 成功不等于路径规划成功。3.4 已通过：能区分 Plan 与 Execute，理解 RViz 规划动画不等于真实执行，并说明 RobotTrajectory 比单个 q_goal 更适合作为 MoveIt→MuJoCo 的接口。第 3 讲完成。第 4 讲已通过：理解 RobotTrajectory / JointTrajectory、positions/velocities/accelerations/time_from_start、joint_name→index 映射，以及轨迹导出作为 MoveIt→MuJoCo 的最小接口。下一步按快速算法主线合并完成第 5–6 讲。
+当前阶段：**P1-A 核心链路学习完成（快速算法主线），进入 C 阶段压缩学习**。第 2 讲已完成：2.3 的 Robotiq 开合/mimic 与 collision/尺度由用户报告通过；2.4 已创建并成功 build 自定义 ur5e_robotiq_description，用户报告已完成 Xacro→URDF、组合 RViz、TF/TCP 与 collision 验证。证据级别：用户报告跑通，未独立复现。3.1 已通过：能区分 planning group 与 current state，并理解 UR5e 6 DOF 与 Robotiq 1 DOF 可按任务分组，不要求每次联合规划全部 7 DOF。3.2 已通过：能说明 Pose = position + orientation + reference frame；理解 quaternion (0,0,0,1) 为 identity rotation；抓取任务应让 tcp_link 对准 grasp pose。3.3 已通过：理解 Pose→IK→q_goal、多解、关节限位/碰撞约束，以及 IK 成功不等于路径规划成功。3.4 已通过：能区分 Plan 与 Execute，理解 RViz 规划动画不等于真实执行，并说明 RobotTrajectory 比单个 q_goal 更适合作为 MoveIt→MuJoCo 的接口。第 3 讲完成。第 4 讲已通过：理解 RobotTrajectory / JointTrajectory、positions/velocities/accelerations/time_from_start、joint_name→index 映射，以及轨迹导出作为 MoveIt→MuJoCo 的最小接口。下一步按快速算法主线合并完成第 5–6 讲。
 
 ## 1. A 阶段
 A01–A08 已完成首轮学习与核心验收。
@@ -38,7 +38,7 @@ A01–A08 已完成首轮学习与核心验收。
 
 **B01–B10 已完成首轮。**
 
-## 3. 当前唯一任务：P1-A 第一个真正机械臂端到端工程
+## 3. P1-A 收口状态
 
 目的：在进入 C01 视觉/相机阶段前，把 B 阶段零散知识串成一个完整机械臂工程。首版不加相机与 GraspNet，目标是“已知目标抓取位姿 → MoveIt 规划 → RobotTrajectory → MuJoCo 执行 → 夹爪闭合 → 抬起”。
 
@@ -54,14 +54,13 @@ A01–A08 已完成首轮学习与核心验收。
 9. 记录失败类型：模型/TF、IK、碰撞、轨迹映射、控制、接触/滑落。
 10. 形成可复现证据：命令、版本、模型、轨迹文件、运行录像/截图、README。
 
-### P1-A 验收
-- 机器人型号、关节名/顺序、单位、TCP 定义一致。
-- MoveIt 输出能明确读出 joint trajectory，不只看 RViz 动画。
-- MuJoCo 执行的是轨迹，不用直接改 qpos 冒充控制执行。
-- 至少完成一次“接近 → 闭合 → 抬起”流程；若因环境阻塞未完成，必须记录阻塞点，不伪造成功。
-- 首版目标是工程链路打通，不追求视觉智能与高成功率。
+### P1-A 收口与证据边界
+- 已掌握并通过问答：planning group、current state、Pose/参考系、Pose→IK→q_goal、Plan/Execute、RobotTrajectory 层次、trajectory point 字段、joint_name→index 映射、MoveIt→MuJoCo 的时间插值与 desired/actual 控制思想、pre-grasp→close→lift 与抓取成功判据。
+- 已实际完成/用户报告通过：UR5e fake hardware + MoveIt/RViz 基础链、Robotiq 2F-85 单独加载、UR5e+Robotiq 自定义 description build、组合 RViz/TF/TCP/collision 快速验证。
+- **未完成且不伪装为完成**：尚未把一条真实 MoveIt RobotTrajectory 导出并在 MuJoCo 中按时间控制执行，也未完成一次 MuJoCo 物理“接近→闭合→抬起”抓取。
+- v1.5 快速算法主线决定：以上未完成项暂缓，不再阻塞后续。需要做简历项目、面试工程复现或 sim2real 前，再回补 P1-A 完整端到端执行证据。
 
-完成 P1-A 后再进入 C01，相机/深度/点云/标定/GraspNet 会把它升级成 P1 完整视觉抓取闭环。
+下一阶段：压缩学习 C 阶段，只保留 RGB/Depth、相机坐标、点云、外参变换、GraspNet 候选与筛选等后续算法必需概念，然后尽快进入 D（BC/ACT/Diffusion Policy）→ E（SAC）→ F（VLA/robot VLM）。
 
 ## 4. 接续规则
 采用 v1.5 快速算法主线：P1-A 仍需把关键链路讲清，但剩余工程不再追求逐个底层文件的完整独立实操。完成最小 TF/TCP、MoveIt 规划→RobotTrajectory、MoveIt→MuJoCo 映射概念与一次代表性验证后，即可结束 P1-A。C 阶段相机/点云/GraspNet 只保留后续模仿学习/VLA 必需的核心概念与一个最小示例，然后尽快进入 D（BC/ACT/Diffusion Policy）→ E（SAC）→ F（VLA/π 系列）。G 阶段 C++/数据结构改为按需穿插，不再作为阻塞算法主线的前置关卡。
@@ -144,8 +143,8 @@ ros2 topic echo /joint_states --once
 - 证据边界：以上为用户报告跑通；未独立检查其本机完整输出，不记录为独立复现。
 
 ### 下一对话唯一接续动作
-1. 先读取仓库 LEARNING_STATE.md 与 P1_A_PROJECT_PLAN.md，不要从聊天猜进度。
-2. 当前合并推进 P1-A 第 5–6 讲；第 4 讲已完成。只保留 MoveIt→MuJoCo 映射、时间插值、控制执行、抓取阶段和成功判据这些关键概念。
-3. 3.1 重点：planning group 是 MoveIt 选择参与规划的关节/链；current state 来自 /joint_states，并进入 MoveIt 的 RobotState/CurrentStateMonitor。
-4. 明确当前官方 ur_moveit_config 的 ur_manipulator 语义链默认到 tool0；自定义 tcp_link 已存在于 URDF/TF，但若要成为 MoveIt 语义末端，需要 SRDF/MoveIt 配置一致。快速路线先讲清这一层，不在此处展开大量配置工程。
-5. 随后推进 3.2 Pose 与参考系 → 3.3 Pose→IK→q_goal → 3.4 Plan/Execute。
+1. 从 C 阶段压缩链开始，不再继续 P1-A ROS 2 工程细节。
+2. 一轮讲清：RGB/Depth → 相机模型 → 点云 → 相机系/机器人 base 坐标变换 → grasp pose。
+3. 下一轮讲 GraspNet：输入/输出、候选抓取表示、score/width/collision/IK/path 筛选。
+4. 随后直接进入 D 阶段：Behavior Cloning → ACT → Diffusion Policy。
+5. 再进入 E/F：SAC 深入 → VLA / robot VLM / π 系列。
