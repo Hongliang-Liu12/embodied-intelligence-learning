@@ -2,6 +2,20 @@
 
 普通上课记录写 learning_logs/，动态进度写 LEARNING_STATE.md。只有路线、映射、组织方式变化才写本文件。
 
+## 2026-09-19：ACT 起切换为慢速深讲
+
+### 用户决定
+
+底层 ROS/MoveIt/传统抓取已经完成必要理解后，从 ACT 起不再继续快速压缩。ACT、Diffusion Policy、SAC、VLA/robot VLM 是目标岗位的核心算法区，需要恢复慢速、细致、可推导、可读代码的教学节奏。
+
+### 调整
+
+1. 建议从 ACT 开始新对话，减少前面大量 ROS/工程上下文干扰。
+2. BC 已完成第一轮入门；新对话先用很短时间复盘 BC 训练循环，再进入 ACT。
+3. ACT 必须覆盖 action chunk、Transformer 数据流、CVAE latent、训练/推理差异、loss、query frequency、temporal aggregation，并至少做一次真实张量/代码跟踪。
+4. Diffusion Policy、SAC、VLA/π 系列继续按“深度掌握级”执行，不再按底层工程的快速模式跳过公式与数据流。
+5. INTERVIEW_MAP.md 继续作为面经范围约束；进入核心算法时明确对应题号。
+
 ## 2026-09-18：执行修订 v1.5——快速算法主线
 
 ### 用户决定
