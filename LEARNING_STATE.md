@@ -60,7 +60,7 @@ A01–A08 已完成首轮学习与核心验收。
 - **未完成且不伪装为完成**：尚未把一条真实 MoveIt RobotTrajectory 导出并在 MuJoCo 中按时间控制执行，也未完成一次 MuJoCo 物理“接近→闭合→抬起”抓取。
 - v1.5 快速算法主线决定：以上未完成项暂缓，不再阻塞后续。需要做简历项目、面试工程复现或 sim2real 前，再回补 P1-A 完整端到端执行证据。
 
-下一阶段：压缩学习 C 阶段，只保留 RGB/Depth、相机坐标、点云、外参变换、GraspNet 候选与筛选等后续算法必需概念，然后尽快进入 D（BC/ACT/Diffusion Policy）→ E（SAC）→ F（VLA/robot VLM）。
+下一阶段：压缩学习 C 阶段。已完成第一轮核心链：RGB/Depth → 相机内参 → 3D 点云（camera frame）→ 外参/坐标变换 → base frame grasp pose；用户能解释深度反投影与为什么 camera-frame grasp pose 不能直接给 MoveIt。下一步直接学习 GraspNet 候选抓取与筛选，对应面经 Q002；随后进入 D（BC/ACT/Diffusion Policy）→ E（SAC）→ F（VLA/robot VLM）。
 
 ## 4. 接续规则
 采用 v1.5 快速算法主线：P1-A 仍需把关键链路讲清，但剩余工程不再追求逐个底层文件的完整独立实操。完成最小 TF/TCP、MoveIt 规划→RobotTrajectory、MoveIt→MuJoCo 映射概念与一次代表性验证后，即可结束 P1-A。C 阶段相机/点云/GraspNet 只保留后续模仿学习/VLA 必需的核心概念与一个最小示例，然后尽快进入 D（BC/ACT/Diffusion Policy）→ E（SAC）→ F（VLA/π 系列）。G 阶段 C++/数据结构改为按需穿插，不再作为阻塞算法主线的前置关卡。
@@ -144,7 +144,7 @@ ros2 topic echo /joint_states --once
 
 ### 下一对话唯一接续动作
 1. 从 C 阶段压缩链开始，不再继续 P1-A ROS 2 工程细节。
-2. 一轮讲清：RGB/Depth → 相机模型 → 点云 → 相机系/机器人 base 坐标变换 → grasp pose。
-3. 下一轮讲 GraspNet：输入/输出、候选抓取表示、score/width/collision/IK/path 筛选。
+2. RGB/Depth → 相机模型 → 点云 → 相机系/机器人 base 坐标变换 → grasp pose 已完成理解级验收。
+3. 当前直接进入 GraspNet：输入/输出、候选抓取表示、score/width/collision/IK/path 筛选，对应 INTERVIEW_MAP.md 的 Q002。
 4. 随后直接进入 D 阶段：Behavior Cloning → ACT → Diffusion Policy。
 5. 再进入 E/F：SAC 深入 → VLA / robot VLM / π 系列。
