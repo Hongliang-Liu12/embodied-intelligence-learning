@@ -60,7 +60,7 @@ A01–A08 已完成首轮学习与核心验收。
 - **未完成且不伪装为完成**：尚未把一条真实 MoveIt RobotTrajectory 导出并在 MuJoCo 中按时间控制执行，也未完成一次 MuJoCo 物理“接近→闭合→抬起”抓取。
 - v1.5 快速算法主线决定：以上未完成项暂缓，不再阻塞后续。需要做简历项目、面试工程复现或 sim2real 前，再回补 P1-A 完整端到端执行证据。
 
-C 阶段压缩学习已完成理解级验收：RGB/Depth → 相机内参 → 点云 → camera/base 坐标变换 → grasp pose；GraspNet 候选抓取的 score/NMS/width/collision/IK/path 筛选链已通过问答，对应面经 Q002、Q019。当前进入 D 阶段：Behavior Cloning → ACT → Diffusion Policy。
+C 阶段压缩学习已完成理解级验收：RGB/Depth → 相机内参 → 点云 → camera/base 坐标变换 → grasp pose；GraspNet 候选抓取的 score/NMS/width/collision/IK/path 筛选链已通过问答，对应面经 Q002、Q019。D 阶段已完成 BC 入门与 compounding error / covariate shift 的第一轮理解。**新的算法核心对话从 ACT（Action Chunking with Transformers）开始。自 ACT 起恢复慢速深讲：网络结构、张量维度、loss、训练/推理数据流、代码与实验都要讲透，不再沿用前面底层工程的快速压缩节奏。**
 
 ## 4. 接续规则
 采用 v1.5 快速算法主线：P1-A 仍需把关键链路讲清，但剩余工程不再追求逐个底层文件的完整独立实操。完成最小 TF/TCP、MoveIt 规划→RobotTrajectory、MoveIt→MuJoCo 映射概念与一次代表性验证后，即可结束 P1-A。C 阶段相机/点云/GraspNet 只保留后续模仿学习/VLA 必需的核心概念与一个最小示例，然后尽快进入 D（BC/ACT/Diffusion Policy）→ E（SAC）→ F（VLA/π 系列）。G 阶段 C++/数据结构改为按需穿插，不再作为阻塞算法主线的前置关卡。
@@ -143,8 +143,9 @@ ros2 topic echo /joint_states --once
 - 证据边界：以上为用户报告跑通；未独立检查其本机完整输出，不记录为独立复现。
 
 ### 下一对话唯一接续动作
-1. 当前进入 D 阶段，先讲 Behavior Cloning（BC）：observation、action、demonstration、监督学习目标。
-2. 重点解释 compounding error / covariate shift：为什么训练时每步都像，闭环执行却会逐渐偏掉。
-3. 随后进入 ACT：为什么用 action chunk、Transformer 如何预测未来一段动作。
-4. 再进入 Diffusion Policy：为什么把动作序列当作条件生成问题。
-5. D 阶段之后进入 E：SAC 深入，再进入 F：VLA / robot VLM / π 系列。
+1. **从 ACT 开始新对话。** ACT 全称 Action Chunking with Transformers。
+2. 先补齐 ACT 前置：普通 BC 的输入/输出、监督学习训练循环、MSE/L1、policy 参数更新、compounding error。
+3. ACT 必须慢讲：action chunk 的张量形状、Transformer 输入输出、CVAE latent、encoder/decoder、KL 项、L1/L2 行为损失、训练态与推理态区别、query frequency、temporal aggregation。
+4. ACT 理解并做最小代码/数据流实验后，再进入 Diffusion Policy；不要直接跳模型名字。
+5. 然后进入 E：SAC 深入（Actor/Critic/Alpha/重参数化/梯度），最后进入 F：VLA / robot VLM / OpenVLA / π 系列。
+6. 面经继续以 INTERVIEW_MAP.md 的 Q021–Q095 为约束，进入对应模块时明确指出题号。
