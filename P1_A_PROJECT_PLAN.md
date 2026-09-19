@@ -262,8 +262,11 @@ wrist_3_link → tool0 → gripper_base → tcp_link。
   - 4.2 ✅ 完成：trajectory point 字段与 time_from_start。
   - 4.3 ✅ 完成：关节名与顺序映射。
   - 4.4 ✅ 完成（理解级）：轨迹导出为 JSON/CSV/NumPy 的接口思想。
-- 第 5–6 讲：快速合并进行中，当前 MoveIt→MuJoCo + 最小抓取核心链。
+- 第 5–6 讲：✅ 核心概念快速收口（理解级）
+  - 已理解 MoveIt→MuJoCo 的模型一致性、时间插值、desired/actual、不能直接改 qpos。
+  - 已理解 grasp/pre-grasp/close/lift 与物理成功判据。
+  - 完整 RobotTrajectory→MuJoCo 实际回放与物理抓取实验暂缓，未记录为独立工程复现。
 
-当前工程小节进度：**16 / 24 完成，当前快速合并推进第 5–6 讲**。
+当前工程状态：**P1-A 24/24 知识点已讲完；工程证据为“核心链路理解完成 + 部分实操验证”，完整 MoveIt→MuJoCo 抓取复现暂缓。**
 
 > 注意：这里的 3/24 是 P1-A 工程课表进度，不替代总课程 72 单元进度。A01–B10 已完成首轮，P1-A 是 B10 后插入的必做工程关卡。
