@@ -252,9 +252,11 @@ wrist_3_link → tool0 → gripper_base → tcp_link。
   - 2.2 ✅ 完成：理解 flange、tool0、gripper_base、tcp_link，以及 fixed joint 安装变换与 TCP 抓取任务坐标。
   - 2.3 ✅ 完成（用户报告）：已验证主动 joint 开合、mimic/耦合；collision 基本贴合且尺度正常。
   - 2.4 ✅ 完成（用户报告）：已创建并 build 自定义 UR5e + Robotiq 2F-85 description；已完成组合 RViz、TF/TCP 与 collision 快速验证。
-- 第 3 讲：进行中，当前 3.1 planning group 与 current state。
+- 第 3 讲：进行中
+  - 3.1 ✅ 完成：planning group 与 current state。
+  - 3.2 进行中：Pose 目标与参考系。
 - 第 4–6 讲：未开始。
 
-当前工程小节进度：**8 / 24 完成，当前第 9 小节（3.1 planning group 与 current state）**。
+当前工程小节进度：**9 / 24 完成，当前第 10 小节（3.2 Pose 目标与参考系）**。
 
 > 注意：这里的 3/24 是 P1-A 工程课表进度，不替代总课程 72 单元进度。A01–B10 已完成首轮，P1-A 是 B10 后插入的必做工程关卡。
