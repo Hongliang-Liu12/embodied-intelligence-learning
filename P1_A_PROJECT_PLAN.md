@@ -270,3 +270,9 @@ wrist_3_link → tool0 → gripper_base → tcp_link。
 当前工程状态：**P1-A 24/24 知识点已讲完；工程证据为“核心链路理解完成 + 部分实操验证”，完整 MoveIt→MuJoCo 抓取复现暂缓。**
 
 > 注意：这里的 3/24 是 P1-A 工程课表进度，不替代总课程 72 单元进度。A01–B10 已完成首轮，P1-A 是 B10 后插入的必做工程关卡。
+
+
+## 快速算法主线补充记录（2026-09-19）
+- C 阶段传统抓取压缩链已完成理解级验收：RGB/Depth→点云→坐标变换→GraspNet候选→score/NMS/width/collision→IK→MoveIt path。
+- 面经 Q002 已通过口头验收；完整 GraspNet 实际推理与机器人执行未做，不记为工程复现。
+- 后续不再继续扩展传统抓取工程细节，直接进入 D 阶段 BC/ACT/Diffusion Policy。
