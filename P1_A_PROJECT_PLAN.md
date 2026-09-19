@@ -256,9 +256,10 @@ wrist_3_link → tool0 → gripper_base → tcp_link。
   - 3.1 ✅ 完成：planning group 与 current state。
   - 3.2 ✅ 完成：Pose 目标与参考系。
   - 3.3 ✅ 完成：Pose → IK → q_goal。
-  - 3.4 进行中：Plan 与 Execute。
-- 第 4–6 讲：未开始。
+  - 3.4 ✅ 完成：Plan 与 Execute。
+- 第 4 讲：进行中，当前 4.1 RobotTrajectory 的层次。
+- 第 5–6 讲：未开始。
 
-当前工程小节进度：**11 / 24 完成，当前第 12 小节（3.4 Plan 与 Execute）**。
+当前工程小节进度：**12 / 24 完成，当前第 13 小节（4.1 RobotTrajectory 的层次）**。
 
 > 注意：这里的 3/24 是 P1-A 工程课表进度，不替代总课程 72 单元进度。A01–B10 已完成首轮，P1-A 是 B10 后插入的必做工程关卡。
