@@ -9,7 +9,7 @@
 当前课程：**P1-A——已知目标位姿的 UR5e + Robotiq 2F-85 + MoveIt + MuJoCo 执行闭环**。
 P1-A 工程课表：**6 讲 / 24 小节**，详见 [P1_A_PROJECT_PLAN.md](P1_A_PROJECT_PLAN.md)。
 当前执行模式：**快速算法主线**。底层 ROS 2 / URDF / Xacro / CMake / MoveIt 工程细节以“能看懂、能解释链路、知道关键调试点”为主要目标，只保留会影响后续算法理解的最小实验；ACT / Diffusion Policy / SAC / VLA 恢复高强度推导、代码与实验。
-当前工程小节：**3.2 Pose 目标与参考系（9/24 已完成）**。第 2 讲已完成：2.3 的 Robotiq 开合/mimic 与 collision/尺度由用户报告通过；2.4 已创建并成功 build 自定义 ur5e_robotiq_description，用户报告已完成 Xacro→URDF、组合 RViz、TF/TCP 与 collision 验证。证据级别：用户报告跑通，未独立复现。3.1 已通过：能区分 planning group 与 current state，并理解 UR5e 6 DOF 与 Robotiq 1 DOF 可按任务分组，不要求每次联合规划全部 7 DOF。下一步进入 3.2：Pose 目标与参考系。
+当前工程小节：**3.3 Pose → IK → q_goal（10/24 已完成）**。第 2 讲已完成：2.3 的 Robotiq 开合/mimic 与 collision/尺度由用户报告通过；2.4 已创建并成功 build 自定义 ur5e_robotiq_description，用户报告已完成 Xacro→URDF、组合 RViz、TF/TCP 与 collision 验证。证据级别：用户报告跑通，未独立复现。3.1 已通过：能区分 planning group 与 current state，并理解 UR5e 6 DOF 与 Robotiq 1 DOF 可按任务分组，不要求每次联合规划全部 7 DOF。3.2 已通过：能说明 Pose = position + orientation + reference frame；理解 quaternion (0,0,0,1) 为 identity rotation；抓取任务应让 tcp_link 对准 grasp pose。下一步进入 3.3：Pose → IK → q_goal。
 
 ## 1. A 阶段
 A01–A08 已完成首轮学习与核心验收。
@@ -145,7 +145,7 @@ ros2 topic echo /joint_states --once
 
 ### 下一对话唯一接续动作
 1. 先读取仓库 LEARNING_STATE.md 与 P1_A_PROJECT_PLAN.md，不要从聊天猜进度。
-2. 当前从 P1-A 3.2 开始，不再回到第 2 讲底层配置。
+2. 当前从 P1-A 3.3 开始，不再回到第 2 讲底层配置。
 3. 3.1 重点：planning group 是 MoveIt 选择参与规划的关节/链；current state 来自 /joint_states，并进入 MoveIt 的 RobotState/CurrentStateMonitor。
 4. 明确当前官方 ur_moveit_config 的 ur_manipulator 语义链默认到 tool0；自定义 tcp_link 已存在于 URDF/TF，但若要成为 MoveIt 语义末端，需要 SRDF/MoveIt 配置一致。快速路线先讲清这一层，不在此处展开大量配置工程。
 5. 随后推进 3.2 Pose 与参考系 → 3.3 Pose→IK→q_goal → 3.4 Plan/Execute。
